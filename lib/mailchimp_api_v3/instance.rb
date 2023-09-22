@@ -33,9 +33,15 @@ module Mailchimp
 
     def matches?(match_data)
       match_data.each do |k, v|
-        break false unless __send__(k).casecmp(v).zero? # case-insensitive comparison
+        break false unless same?(__send__(k), v)
         true
       end
+    end
+
+    def same?(thing, other_thing)
+      return thing.casecmp(other_thing.to_s).zero? if thing.is_a? String
+      return thing.subhash?(other_thing.to_h)      if thing.is_a? Hash
+      thing == other_thing
     end
 
     def subclass_from(collection_class, *args)
